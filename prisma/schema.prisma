@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -28,7 +27,9 @@ model Task {
   status          TaskStatus  @default(ACTIVE)
   aiGuidance      String?
   targetDate      DateTime?
-  createdAt       DateTime    @default(now())
+  reminderAt        DateTime?
+  lastInteractedAt  DateTime?
+  createdAt         DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
   userId          String
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -37,6 +38,7 @@ model Task {
   @@index([userId])
   @@index([category])
   @@index([status])
+  @@index([reminderAt])
   @@map("tasks")
 }
 
@@ -62,8 +64,13 @@ model UserPreference {
   tonePreference      Tone     @default(SUPPORTIVE)
   reminderFrequency   String   @default("moderate")
   workloadLevel       String   @default("balanced")
-  showEncouragement   Boolean  @default(true)
-  createdAt           DateTime @default(now())
+  showEncouragement         Boolean  @default(true)
+  showOptionalEncouragement Boolean  @default(false)
+  taskDetailLevel           String   @default("detailed")
+  fontSizePreference        String   @default("default")
+  reducedMotion             Boolean  @default(false)
+  highContrast              Boolean  @default(false)
+  createdAt                 DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
   @@map("user_preferences")

@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = (session.user as any).id
-    const { title, description, category, targetDate } = await request.json()
+    const { title, description, category, targetDate, reminderAt } = await request.json()
 
     if (!title || title.trim().length === 0) {
       return NextResponse.json(
@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
         description: description?.trim() || null,
         category: category || "PERSONAL",
         targetDate: targetDate ? new Date(targetDate) : null,
+        reminderAt: reminderAt ? new Date(reminderAt) : null,
         userId,
       },
       include: {

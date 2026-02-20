@@ -71,3 +71,33 @@ body {
   min-width: 44px;
   min-height: 44px;
 }
+
+/* ─── Streaming cursor blink (for StreamingBreakdown component) ─────────── */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Accessibility: user-controlled font scaling ──────────────────────── */
+[data-font-size="large"]  { font-size: 112.5%; }
+[data-font-size="xl"]     { font-size: 125%; }
+
+/* ─── Accessibility: user-controlled high contrast ─────────────────────── */
+[data-high-contrast="true"] body,
+[data-high-contrast="true"] {
+  --tw-text-opacity: 1;
+}
+[data-high-contrast="true"] .text-\[\#636E72\] { color: #444 !important; }
+[data-high-contrast="true"] .text-\[\#B2BEC3\] { color: #555 !important; }
+[data-high-contrast="true"] .border-\[\#DFE6E9\] { border-color: #aaa !important; }
+[data-high-contrast="true"] .bg-\[\#F8F9FA\]   { background-color: #f0f0f0 !important; }
+
+/* ─── Accessibility: user-controlled reduced motion override ────────────── */
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

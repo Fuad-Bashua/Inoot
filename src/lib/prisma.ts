@@ -1,12 +1,13 @@
-import { PrismaClient } from "@/generated/prisma/client"
-import { PrismaPg } from "@prisma/adapter-pg"
-import { Pool } from "pg"
+import { PrismaClient } from "@prisma/client"
+import { PrismaNeonHttp } from "@prisma/adapter-neon"
 
-// Prisma 7 (prisma-client provider) requires a driver adapter.
-// We use @prisma/adapter-pg backed by a pg connection pool.
+// PrismaNeonHttp sends each query as an independent HTTP request to Neon's
+// serverless HTTP endpoint. There is no persistent connection to drop, so
+// long-running Claude calls between two DB operations no longer cause
+// "Control plane request failed" errors.
 function createPrismaClient() {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL })
-  const adapter = new PrismaPg(pool)
+  // Second arg (HTTPQueryOptions) has all-optional fields — {} is valid.
+  const adapter = new PrismaNeonHttp(process.env.DATABASE_URL!, {})
   return new PrismaClient({ adapter })
 }
 

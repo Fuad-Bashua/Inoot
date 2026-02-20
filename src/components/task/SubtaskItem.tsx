@@ -6,12 +6,15 @@ import { formatTimeEstimate, cn } from "@/lib/utils"
 
 interface SubtaskItemProps {
   subtask: Subtask
-  /** Whether this is the highlighted "up next" item (rendered by NextActionStep instead) */
-  isNext?: boolean
+  /**
+   * isPreview = true → "Coming up" mode: greyed out, title only, description
+   * hidden but expandable on click. No direct toggle action encouraged.
+   */
+  isPreview?: boolean
   onToggle?: (subtaskId: string, completed: boolean) => void
 }
 
-export function SubtaskItem({ subtask, isNext = false, onToggle }: SubtaskItemProps) {
+export function SubtaskItem({ subtask, isPreview = false, onToggle }: SubtaskItemProps) {
   const [completed, setCompleted] = useState(subtask.completed)
   const [isUpdating, setIsUpdating] = useState(false)
   const [expanded, setExpanded] = useState(false)
@@ -47,7 +50,8 @@ export function SubtaskItem({ subtask, isNext = false, onToggle }: SubtaskItemPr
     <li
       className={cn(
         "flex gap-3 py-4 border-b border-[#DFE6E9] last:border-b-0 transition-opacity duration-200",
-        completed && !isNext && "opacity-50"
+        // Completed items in any context get opacity-50
+        completed && !isPreview && "opacity-50",
       )}
     >
       {/* Checkbox — 44px touch target wrapper */}
@@ -97,8 +101,12 @@ export function SubtaskItem({ subtask, isNext = false, onToggle }: SubtaskItemPr
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-3">
           <span
             className={cn(
-              "text-sm font-medium text-[#2D3436] leading-snug transition-all duration-200",
-              completed && "line-through text-[#B2BEC3]"
+              "text-sm font-medium leading-snug transition-all duration-200",
+              completed
+                ? "line-through text-[#B2BEC3]"
+                : isPreview
+                  ? "text-[#636E72]"
+                  : "text-[#2D3436]"
             )}
           >
             {subtask.title}
@@ -110,19 +118,19 @@ export function SubtaskItem({ subtask, isNext = false, onToggle }: SubtaskItemPr
           )}
         </div>
 
-        {/* Description — expandable */}
+        {/* Description — expandable. In preview mode, always collapsed unless user expands. */}
         {subtask.description && (
           <div className="mt-1">
-            {expanded ? (
+            {expanded && (
               <p className="text-sm text-[#636E72] leading-relaxed">{subtask.description}</p>
-            ) : null}
+            )}
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
               className="text-xs text-[#6B8F9E] hover:text-[#5A7D8C] transition-colors mt-1 focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2 rounded"
               aria-expanded={expanded}
             >
-              {expanded ? "Hide details" : "Show details"}
+              {expanded ? "Hide details" : "See details"}
             </button>
           </div>
         )}

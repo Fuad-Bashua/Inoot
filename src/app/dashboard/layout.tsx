@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar"
 import { AuthGuard } from "@/components/layout/AuthGuard"
+import { IdleEncouragement } from "@/components/feedback/IdleEncouragement"
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,8 @@ export default function DashboardLayout({
         <main className="max-w-[768px] mx-auto px-6 md:px-12 py-8 md:py-12">
           {children}
         </main>
+        {/* Idle encouragement — shown once per session if opt-in is enabled */}
+        <IdleEncouragement />
       </div>
     </AuthGuard>
   )

@@ -4,10 +4,11 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-import { LoadingBreakdown } from "@/components/ai/LoadingBreakdown"
+import { StreamingBreakdown } from "@/components/ai/StreamingBreakdown"
 import { CATEGORIES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { Category } from "@/types/task"
+import { getStoredEnergyMode } from "@/components/dashboard/EnergySelector"
 
 interface TaskInputFormProps {
   /** If provided, the form will pre-fill and PUT instead of POST */
@@ -33,6 +34,13 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isBreakingDown, setIsBreakingDown] = useState(false)
+  // Streaming state
+  const [streamText, setStreamText] = useState("")
+  const [streamComplete, setStreamComplete] = useState(false)
+  // Progressive disclosure: auto-expand if editing and existing data is present
+  const [showDetails, setShowDetails] = useState(
+    !!(initialValues?.description || initialValues?.targetDate)
+  )
 
   function validate() {
     if (!title.trim()) {
@@ -85,24 +93,62 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
         taskId = data.data.id
       }
 
-      // Show loading breakdown UI before AI call
+      // Switch to streaming breakdown UI
       setIsLoading(false)
       setIsBreakingDown(true)
+      setStreamText("")
+      setStreamComplete(false)
 
-      // Call AI breakdown
+      // ── Streaming fetch ────────────────────────────────────────────────────
       const bdRes = await fetch("/api/breakdown", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ taskId }),
+        body: JSON.stringify({ taskId, energyMode: getStoredEnergyMode() }),
       })
-      const bdData = await bdRes.json()
-      if (!bdRes.ok) throw new Error(bdData.error ?? "Failed to generate breakdown")
 
-      // Success — navigate to the task view
-      router.push(`/task/${taskId}`)
+      if (!bdRes.body) throw new Error("No response stream available")
+
+      const reader = bdRes.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        // Process complete SSE lines
+        const lines = buffer.split("\n")
+        buffer = lines.pop() ?? ""
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue
+          const raw = line.slice(6).trim()
+          if (!raw) continue
+
+          let event: { type: string; text?: string; taskId?: string; message?: string }
+          try { event = JSON.parse(raw) } catch { continue }
+
+          if (event.type === "chunk" && event.text) {
+            setStreamText((prev) => prev + event.text)
+          } else if (event.type === "done" && event.taskId) {
+            setStreamComplete(true)
+            // Brief pause so the "saving" state is visible, then navigate
+            await new Promise((r) => setTimeout(r, 500))
+            router.push(`/task/${event.taskId}`)
+            return
+          } else if (event.type === "error") {
+            throw new Error(
+              event.message ?? "Something didn't work — try again when you're ready."
+            )
+          }
+        }
+      }
     } catch (err) {
       setIsBreakingDown(false)
       setIsLoading(false)
+      setStreamText("")
+      setStreamComplete(false)
       setError(
         err instanceof Error
           ? err.message
@@ -111,9 +157,9 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
     }
   }
 
-  // Show the calm loading state while Claude is working
+  // Show streaming breakdown UI while Claude is generating
   if (isBreakingDown) {
-    return <LoadingBreakdown />
+    return <StreamingBreakdown streamText={streamText} isComplete={streamComplete} />
   }
 
   return (
@@ -135,38 +181,6 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
         autoComplete="off"
         autoFocus
       />
-
-      {/* Description */}
-      <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor="task-description"
-          className="text-sm font-medium text-[#2D3436]"
-        >
-          Any details or context?{" "}
-          <span className="font-normal text-[#636E72]">(optional)</span>
-        </label>
-        <textarea
-          id="task-description"
-          name="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Add any details or context that might help..."
-          maxLength={2000}
-          rows={4}
-          className={cn(
-            "w-full px-4 py-3 rounded-xl text-[#2D3436] text-base",
-            "bg-white border border-[#DFE6E9] placeholder:text-[#B2BEC3]",
-            "transition-colors resize-none",
-            "outline-none focus:ring-2 focus:ring-[#6B8F9E] focus:border-[#6B8F9E]",
-            "sm:rows-3"
-          )}
-        />
-        {description.length > 1800 && (
-          <p className="text-xs text-[#B2BEC3] text-right">
-            {2000 - description.length} characters remaining
-          </p>
-        )}
-      </div>
 
       {/* Category */}
       <div className="flex flex-col gap-2">
@@ -203,28 +217,80 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
         </div>
       </div>
 
-      {/* Target date (optional) */}
-      <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor="task-date"
-          className="text-sm font-medium text-[#2D3436]"
-        >
-          Target date{" "}
-          <span className="font-normal text-[#636E72]">(optional)</span>
-        </label>
-        <input
-          id="task-date"
-          type="date"
-          value={targetDate}
-          onChange={(e) => setTargetDate(e.target.value)}
-          min={new Date().toISOString().split("T")[0]}
+      {/* ── "Add more details" progressive disclosure ───────────────── */}
+      <div className="space-y-4">
+        <button
+          type="button"
+          onClick={() => setShowDetails((v) => !v)}
+          aria-expanded={showDetails}
           className={cn(
-            "w-full sm:w-auto px-4 py-3 rounded-xl text-[#2D3436] text-base",
-            "bg-white border border-[#DFE6E9]",
-            "transition-colors",
-            "outline-none focus:ring-2 focus:ring-[#6B8F9E] focus:border-[#6B8F9E]"
+            "flex items-center gap-1.5 text-sm text-[#636E72] hover:text-[#2D3436]",
+            "transition-colors focus-visible:outline-2 focus-visible:outline-[#6B8F9E] rounded"
           )}
-        />
+        >
+          <svg
+            className={cn("w-3.5 h-3.5 transition-transform", showDetails && "rotate-90")}
+            fill="none"
+            viewBox="0 0 14 14"
+            aria-hidden="true"
+          >
+            <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {showDetails ? "Hide details" : "Add more details"}
+        </button>
+
+        {showDetails && (
+          <div className="space-y-4">
+            {/* Description */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="task-description" className="text-sm font-medium text-[#2D3436]">
+                Any details or context?{" "}
+                <span className="font-normal text-[#636E72]">(optional)</span>
+              </label>
+              <textarea
+                id="task-description"
+                name="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Add any details or context that might help..."
+                maxLength={2000}
+                rows={4}
+                className={cn(
+                  "w-full px-4 py-3 rounded-xl text-[#2D3436] text-base",
+                  "bg-white border border-[#DFE6E9] placeholder:text-[#B2BEC3]",
+                  "transition-colors resize-none",
+                  "outline-none focus:ring-2 focus:ring-[#6B8F9E] focus:border-[#6B8F9E]"
+                )}
+              />
+              {description.length > 1800 && (
+                <p className="text-xs text-[#B2BEC3] text-right">
+                  {2000 - description.length} characters remaining
+                </p>
+              )}
+            </div>
+
+            {/* Target date */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="task-date" className="text-sm font-medium text-[#2D3436]">
+                Target date{" "}
+                <span className="font-normal text-[#636E72]">(optional)</span>
+              </label>
+              <input
+                id="task-date"
+                type="date"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+                className={cn(
+                  "w-full sm:w-auto px-4 py-3 rounded-xl text-[#2D3436] text-base",
+                  "bg-white border border-[#DFE6E9]",
+                  "transition-colors",
+                  "outline-none focus:ring-2 focus:ring-[#6B8F9E] focus:border-[#6B8F9E]"
+                )}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Error message */}

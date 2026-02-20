@@ -9,6 +9,8 @@ export interface Task {
   status: TaskStatus
   aiGuidance: string | null
   targetDate: string | null
+  reminderAt: string | null
+  lastInteractedAt: string | null
   createdAt: string
   updatedAt: string
   userId: string
@@ -31,6 +33,7 @@ export interface CreateTaskInput {
   description?: string
   category: Category
   targetDate?: string
+  reminderAt?: string
 }
 
 export interface UpdateTaskInput {
@@ -39,6 +42,7 @@ export interface UpdateTaskInput {
   category?: Category
   status?: TaskStatus
   targetDate?: string
+  reminderAt?: string | null
 }
 
 export interface UpdateSubtaskInput {

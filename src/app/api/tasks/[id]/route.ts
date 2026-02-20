@@ -34,6 +34,13 @@ export async function GET(
       )
     }
 
+    // Stamp lastInteractedAt = now, but return the PREVIOUS value so the client
+    // can compute how long ago the user was last here (for the "welcome back" card).
+    // Fire-and-forget: don't block the response.
+    prisma.task
+      .update({ where: { id }, data: { lastInteractedAt: new Date() } })
+      .catch(console.error)
+
     return NextResponse.json({ success: true, data: task })
   } catch (error) {
     console.error("Get task error:", error)
@@ -83,6 +90,12 @@ export async function PUT(
         ...(data.status !== undefined && { status: data.status }),
         ...(data.targetDate !== undefined && {
           targetDate: data.targetDate ? new Date(data.targetDate) : null,
+        }),
+        ...(data.reminderAt !== undefined && {
+          reminderAt: data.reminderAt ? new Date(data.reminderAt) : null,
+        }),
+        ...(data.lastInteractedAt !== undefined && {
+          lastInteractedAt: data.lastInteractedAt ? new Date(data.lastInteractedAt) : null,
         }),
       },
       include: {

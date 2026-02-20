@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { SessionProvider } from "@/components/layout/SessionProvider"
 import { ServiceWorker } from "@/components/layout/ServiceWorker"
+import { AccessibilityApplier } from "@/components/layout/AccessibilityApplier"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -43,6 +44,7 @@ export default function RootLayout({
       >
         <SessionProvider>{children}</SessionProvider>
         <ServiceWorker />
+        <AccessibilityApplier />
       </body>
     </html>
   )

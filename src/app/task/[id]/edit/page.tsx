@@ -7,7 +7,7 @@ import { AuthGuard } from "@/components/layout/AuthGuard"
 import { Navbar } from "@/components/layout/Navbar"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-import { LoadingBreakdown } from "@/components/ai/LoadingBreakdown"
+import { StreamingBreakdown } from "@/components/ai/StreamingBreakdown"
 import { CATEGORIES } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { Task } from "@/types/task"
@@ -31,6 +31,8 @@ function EditPageContent({ taskId }: { taskId: string }) {
   const [formError, setFormError] = useState("")
   const [isSaving, setIsSaving] = useState(false)
   const [isBreakingDown, setIsBreakingDown] = useState(false)
+  const [streamText, setStreamText] = useState("")
+  const [streamComplete, setStreamComplete] = useState(false)
 
   const fetchTask = useCallback(async () => {
     try {
@@ -110,18 +112,54 @@ function EditPageContent({ taskId }: { taskId: string }) {
 
       setIsSaving(false)
       setIsBreakingDown(true)
+      setStreamText("")
+      setStreamComplete(false)
 
       const bdRes = await fetch("/api/breakdown", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ taskId }),
       })
-      if (!bdRes.ok) throw new Error("Breakdown failed")
 
-      router.push(`/task/${taskId}`)
+      if (!bdRes.body) throw new Error("No response stream available")
+
+      const reader = bdRes.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        const lines = buffer.split("\n")
+        buffer = lines.pop() ?? ""
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue
+          const raw = line.slice(6).trim()
+          if (!raw) continue
+
+          let event: { type: string; text?: string; taskId?: string; message?: string }
+          try { event = JSON.parse(raw) } catch { continue }
+
+          if (event.type === "chunk" && event.text) {
+            setStreamText((prev) => prev + event.text)
+          } else if (event.type === "done") {
+            setStreamComplete(true)
+            await new Promise((r) => setTimeout(r, 500))
+            router.push(`/task/${taskId}`)
+            return
+          } else if (event.type === "error") {
+            throw new Error(event.message ?? "Breakdown failed")
+          }
+        }
+      }
     } catch {
       setIsBreakingDown(false)
       setIsSaving(false)
+      setStreamText("")
+      setStreamComplete(false)
       setFormError("Something didn't work — try again when you're ready.")
     }
   }
@@ -152,7 +190,7 @@ function EditPageContent({ taskId }: { taskId: string }) {
   }
 
   if (isBreakingDown) {
-    return <LoadingBreakdown />
+    return <StreamingBreakdown streamText={streamText} isComplete={streamComplete} />
   }
 
   return (
