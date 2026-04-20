@@ -6,9 +6,9 @@ import { TaskInputForm } from "@/components/task/TaskInputForm"
 export default function NewTaskPage() {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
+      <div className="min-h-screen app-shell flex flex-col">
         <Navbar />
-        <main className="flex-grow max-w-[768px] mx-auto px-6 py-8 md:px-12 md:py-12 w-full">
+        <main className="flex-grow max-w-[1120px] mx-auto px-4 sm:px-6 py-8 md:py-10 w-full motion-page-enter">
           <div className="mb-8">
             <Link
               href="/dashboard"
@@ -19,8 +19,8 @@ export default function NewTaskPage() {
             </Link>
           </div>
 
-          <div className="max-w-[560px]">
-            <h1 className="text-xl sm:text-2xl font-semibold text-[#2D3436] mb-2">
+          <div className="max-w-[600px] mx-auto w-full">
+            <h1 className="text-3xl font-bold tracking-tight text-[#2D3436] mb-2">
               New task
             </h1>
             <p className="text-sm text-[#636E72] leading-relaxed mb-8">

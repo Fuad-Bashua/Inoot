@@ -72,8 +72,8 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[#2D3436]">Welcome back</h1>
-        <p className="text-[#636E72] mt-1 text-sm leading-relaxed">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Welcome back</h1>
+        <p className="text-[#9CA3AF] mt-2 text-base leading-relaxed">
           Pick up right where you left off.
         </p>
       </div>
@@ -89,6 +89,7 @@ export default function LoginPage() {
           error={errors.email}
           autoComplete="email"
           autoFocus
+          variant="glass"
         />
 
         <Input
@@ -100,11 +101,12 @@ export default function LoginPage() {
           onChange={handleChange}
           error={errors.password}
           autoComplete="current-password"
+          variant="glass"
         />
 
         {errors.form && (
           <div
-            className="px-4 py-3 rounded-xl bg-[#FDF2F2] border border-[#E07070] text-[#E07070] text-sm leading-relaxed"
+            className="px-4 py-3 rounded-xl bg-[rgba(107,143,158,0.1)] border-l-4 border-[#6B8F9E] text-[#cfe2ea] text-sm leading-relaxed"
             role="alert"
           >
             {errors.form}
@@ -123,11 +125,11 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-[#636E72] mt-6">
+      <p className="text-center text-sm text-[#9CA3AF] mt-6">
         Don&apos;t have an account?{" "}
         <Link
           href="/auth/signup"
-          className="text-[#6B8F9E] font-medium hover:text-[#5A7D8C] transition-colors"
+          className="text-[#9ec0ce] font-medium hover:text-white transition-colors"
         >
           Sign up
         </Link>

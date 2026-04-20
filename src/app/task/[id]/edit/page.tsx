@@ -194,7 +194,7 @@ function EditPageContent({ taskId }: { taskId: string }) {
   }
 
   return (
-    <div className="max-w-[560px] space-y-8">
+    <div className="max-w-[600px] mx-auto w-full space-y-8 motion-page-enter">
       {/* Back */}
       <Link
         href={`/task/${taskId}`}
@@ -204,7 +204,7 @@ function EditPageContent({ taskId }: { taskId: string }) {
       </Link>
 
       <div>
-        <h1 className="text-xl sm:text-2xl font-semibold text-[#2D3436] mb-1">
+        <h1 className="text-3xl font-bold tracking-tight text-[#2D3436] mb-1">
           Edit task
         </h1>
         <p className="text-sm text-[#636E72]">
@@ -296,7 +296,7 @@ function EditPageContent({ taskId }: { taskId: string }) {
 
         {/* Error */}
         {formError && (
-          <div role="alert" className="px-4 py-3 rounded-xl bg-[#E07070]/10 border border-[#E07070]/20 text-sm text-[#E07070]">
+          <div role="alert" className="px-4 py-3 rounded-xl bg-[#F0C674]/15 border border-[#F0C674]/40 text-sm text-[#2D3436] leading-relaxed">
             {formError}
           </div>
         )}
@@ -337,9 +337,9 @@ export default function EditTaskPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
+      <div className="min-h-screen app-shell flex flex-col">
         <Navbar />
-        <main className="flex-grow max-w-[768px] mx-auto px-6 py-8 md:px-12 md:py-12 w-full">
+        <main className="flex-grow max-w-[1120px] mx-auto px-4 sm:px-6 py-8 md:py-10 w-full">
           <EditPageContent taskId={taskId} />
         </main>
       </div>

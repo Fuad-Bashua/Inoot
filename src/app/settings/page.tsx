@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { AuthGuard } from "@/components/layout/AuthGuard"
@@ -27,7 +27,7 @@ type FontSize = "default" | "large" | "xl"
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-4">
-      <h2 className="text-base font-semibold text-[#2D3436]">{title}</h2>
+      <h2 className="text-xl font-semibold text-[#2D3436]">{title}</h2>
       {children}
     </section>
   )
@@ -139,7 +139,7 @@ function AIToneCard() {
   }
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-4">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">🗣️</span>
@@ -148,7 +148,7 @@ function AIToneCard() {
         <SavedBadge message={msg} />
       </div>
 
-      <div className="space-y-3" role="radiogroup" aria-label="AI tone preference">
+      <div className="grid gap-3 sm:grid-cols-3" role="radiogroup" aria-label="AI tone preference">
         {TONE_OPTIONS.map((opt) => {
           const isSelected = current === opt.value
           return (
@@ -160,7 +160,7 @@ function AIToneCard() {
               onClick={() => handleSelect(opt.value)}
               disabled={saving}
               className={cn(
-                "w-full text-left px-4 py-3.5 rounded-xl border transition-colors",
+                "w-full text-left px-4 py-3.5 rounded-xl border transition-colors relative",
                 "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
                 isSelected
                   ? "border-[#6B8F9E] bg-[#6B8F9E]/5"
@@ -175,7 +175,7 @@ function AIToneCard() {
                 )}
               </p>
               {/* Preview — always visible so users know what they're choosing */}
-              <p className="text-xs text-[#636E72] mt-1.5 leading-relaxed italic">
+              <p className="text-xs text-[#636E72] mt-2 leading-relaxed italic bg-[#F8F9FA] border border-[#DFE6E9] rounded-lg p-2">
                 &ldquo;{opt.preview}&rdquo;
               </p>
             </button>
@@ -236,7 +236,7 @@ function TaskDetailLevelCard() {
   }
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-4">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">📝</span>
@@ -322,7 +322,7 @@ function ReminderPreference() {
   }
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-4">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">🔔</span>
@@ -404,10 +404,18 @@ function AccessibilityCard() {
           root.style.fontSize = fontSizeMap[v] ?? ""
         }
         if ("reducedMotion" in patch) {
-          patch.reducedMotion ? root.setAttribute("data-reduced-motion", "true") : root.removeAttribute("data-reduced-motion")
+          if (patch.reducedMotion) {
+            root.setAttribute("data-reduced-motion", "true")
+          } else {
+            root.removeAttribute("data-reduced-motion")
+          }
         }
         if ("highContrast" in patch) {
-          patch.highContrast ? root.setAttribute("data-high-contrast", "true") : root.removeAttribute("data-high-contrast")
+          if (patch.highContrast) {
+            root.setAttribute("data-high-contrast", "true")
+          } else {
+            root.removeAttribute("data-high-contrast")
+          }
         }
       }
     } finally {
@@ -422,7 +430,7 @@ function AccessibilityCard() {
   ]
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-5">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-5">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">♿</span>
@@ -558,7 +566,7 @@ function EncouragementSection() {
   }
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-4">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-lg" aria-hidden="true">🌱</span>
         <span className="text-sm font-medium text-[#2D3436]">Encouragement</span>
@@ -657,7 +665,7 @@ function LearnedPatterns() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-3 animate-pulse">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-3 animate-pulse">
         {[1, 2, 3].map((i) => <div key={i} className="h-4 bg-[#DFE6E9] rounded-full w-3/4" />)}
       </div>
     )
@@ -665,7 +673,7 @@ function LearnedPatterns() {
 
   if (!patterns || patterns.taskCount < 3) {
     return (
-      <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-2">
+      <div className="soft-glass-card rounded-2xl p-6 space-y-2">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">🌱</span>
           <span className="text-sm font-medium text-[#2D3436]">Just getting started</span>
@@ -699,7 +707,7 @@ function LearnedPatterns() {
   }
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-1">
+    <div className="soft-glass-card rounded-2xl p-6 space-y-1">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-lg" aria-hidden="true">🔍</span>
         <span className="text-sm font-medium text-[#2D3436]">
@@ -793,7 +801,7 @@ function YourDataSection() {
   return (
     <div className="space-y-3">
       {/* Reset preferences */}
-      <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-3">
+      <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-3">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">🔄</span>
           <span className="text-sm font-medium text-[#2D3436]">Reset preferences</span>
@@ -825,7 +833,7 @@ function YourDataSection() {
       </div>
 
       {/* Delete account */}
-      <div className="bg-white border border-[#DFE6E9] rounded-xl p-5 space-y-3">
+      <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-3">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden="true">🗑️</span>
           <span className="text-sm font-medium text-[#2D3436]">Delete account</span>
@@ -838,21 +846,17 @@ function YourDataSection() {
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className={cn(
-              "px-4 py-2 text-sm rounded-xl border border-[#E07070]/30 text-[#E07070]/80",
-              "hover:border-[#E07070]/60 hover:text-[#E07070] transition-colors min-h-[44px]",
-              "focus-visible:outline-2 focus-visible:outline-[#E07070] focus-visible:outline-offset-2"
-            )}
+            className="text-sm text-[#636E72] hover:text-[#2D3436] inline-flex items-center gap-1"
           >
-            Delete my account
+            ⚠ Delete my account
           </button>
         ) : (
-          <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#E07070]/5 border border-[#E07070]/20">
+          <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#F0C674]/12 border border-[#F0C674]/35">
             <p className="text-sm text-[#636E72]">
               This will permanently delete your account and all your tasks. Are you sure?
             </p>
             {deleteError && (
-              <p role="alert" className="text-xs text-[#E07070]">{deleteError}</p>
+              <p role="alert" className="text-xs text-[#636E72]">{deleteError}</p>
             )}
             <div className="flex gap-2">
               <button
@@ -860,9 +864,9 @@ function YourDataSection() {
                 onClick={handleDeleteAccount}
                 disabled={deleting}
                 className={cn(
-                  "px-4 py-2 text-sm rounded-xl bg-[#E07070] text-white min-h-[44px]",
-                  "hover:bg-[#cf5f5f] transition-colors",
-                  "focus-visible:outline-2 focus-visible:outline-[#E07070] focus-visible:outline-offset-2",
+                  "px-4 py-2 text-sm rounded-xl bg-[#2D3436] text-white min-h-[44px]",
+                  "hover:opacity-90 transition-colors",
+                  "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
                   deleting && "opacity-60 cursor-not-allowed"
                 )}
               >
@@ -902,7 +906,7 @@ function AccountCard() {
   }, [])
 
   return (
-    <div className="bg-white border border-[#DFE6E9] rounded-xl p-6 space-y-4">
+    <div className="bg-white border border-[#DFE6E9] rounded-2xl shadow-sm p-6 space-y-4">
       {loading ? (
         <div className="space-y-3 animate-pulse">
           <div className="h-4 w-1/3 bg-[#DFE6E9] rounded-full" />
@@ -938,7 +942,7 @@ function AccountCard() {
 
 function SettingsPageContent() {
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <div>
         <h1 className="text-xl sm:text-2xl font-semibold text-[#2D3436]">Settings</h1>
         <p className="text-sm text-[#636E72] mt-1">Manage your account and preferences.</p>
@@ -990,9 +994,9 @@ function SettingsPageContent() {
 export default function SettingsPage() {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
+      <div className="min-h-screen app-shell flex flex-col">
         <Navbar />
-        <main className="flex-grow max-w-[768px] mx-auto px-6 py-8 md:px-12 md:py-12 w-full pb-20">
+        <main className="flex-grow max-w-[1120px] mx-auto px-4 sm:px-6 py-8 md:py-10 w-full pb-20 motion-page-enter">
           <SettingsPageContent />
         </main>
       </div>

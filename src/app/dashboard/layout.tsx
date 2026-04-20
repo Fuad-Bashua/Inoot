@@ -9,9 +9,9 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#F8F9FA]">
+      <div className="min-h-screen app-shell">
         <Navbar />
-        <main className="max-w-[768px] mx-auto px-6 md:px-12 py-8 md:py-12">
+        <main className="max-w-[1120px] mx-auto px-4 sm:px-6 py-8 md:py-10 motion-page-enter">
           {children}
         </main>
         {/* Idle encouragement — shown once per session if opt-in is enabled */}

@@ -58,18 +58,7 @@ function PreStreamSkeleton() {
       aria-live="polite"
       aria-label="Generating your task breakdown"
     >
-      <div className="w-full max-w-md space-y-4">
-        <div className="bg-white border border-[#DFE6E9] rounded-xl p-6 space-y-3 animate-pulse">
-          <div className="h-3 w-1/3 bg-[#DFE6E9] rounded-full" />
-          <div className="h-4 w-3/4 bg-[#DFE6E9] rounded-lg" />
-          <div className="h-3 w-full bg-[#DFE6E9] rounded-full" />
-          <div className="h-3 w-5/6 bg-[#DFE6E9] rounded-full" />
-        </div>
-        <div className="bg-white border border-[#DFE6E9] rounded-xl p-6 space-y-3 animate-pulse opacity-60">
-          <div className="h-4 w-2/3 bg-[#DFE6E9] rounded-lg" />
-          <div className="h-3 w-full bg-[#DFE6E9] rounded-full" />
-        </div>
-      </div>
+      <div className="loader-dots" aria-hidden="true"><span /><span /><span /></div>
       <p className="text-sm text-[#636E72] text-center">
         Putting your plan together{"...".slice(0, dotCount)}
       </p>
@@ -94,13 +83,16 @@ export function StreamingBreakdown({ streamText, isComplete }: StreamingBreakdow
       aria-label="Generating your task breakdown"
     >
       {/* Streaming card */}
-      <div className="w-full max-w-md bg-[#6B8F9E]/5 border border-[#6B8F9E]/20 rounded-xl p-6 space-y-3">
+      <div className="w-full max-w-md soft-glass-card rounded-2xl p-6 space-y-3">
         <p className="text-xs font-medium text-[#6B8F9E] uppercase tracking-wide">
           Writing your plan
         </p>
 
         {/* The guidance text — builds up as Claude streams */}
-        <p className="text-sm text-[#2D3436] leading-relaxed whitespace-pre-wrap">
+        <p
+          key={guidance.length}
+          className="text-sm text-[#2D3436] leading-relaxed whitespace-pre-wrap animate-[fade-in-up_0.15s_ease-out]"
+        >
           {guidance}
           {/* Blinking cursor shown while still streaming */}
           {!isComplete && (
@@ -113,6 +105,7 @@ export function StreamingBreakdown({ streamText, isComplete }: StreamingBreakdow
       </div>
 
       {/* Status line */}
+      <div className="loader-dots" aria-hidden="true"><span /><span /><span /></div>
       <p className={cn("text-sm text-[#636E72] text-center transition-opacity duration-300",
         isComplete && "opacity-60"
       )}>

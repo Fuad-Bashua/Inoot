@@ -268,10 +268,10 @@ export default function DashboardPage() {
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold text-[#2D3436]">
+          <h1 className="text-3xl sm:text-[32px] font-bold tracking-tight text-[#2D3436]">
             Hey, {firstName}
           </h1>
-          <p className="text-sm text-[#636E72] mt-1 leading-relaxed">
+          <p className="text-base text-[#636E72] mt-1 leading-relaxed">
             {/* Energy mode always wins; fall back to rotating greeting or default */}
             {energyMode !== "normal"
               ? getSubtitle(energyMode)
@@ -282,9 +282,8 @@ export default function DashboardPage() {
         {/* Desktop CTA — hidden on mobile (sticky button used instead) */}
         <Link
           href="/task/new"
-          className="hidden sm:flex items-center shrink-0 min-h-[44px] px-4 py-2.5
-                     bg-[#6B8F9E] text-white rounded-xl text-sm font-medium
-                     hover:bg-[#5A7D8C] transition-colors whitespace-nowrap"
+          className="hidden sm:flex items-center shrink-0 min-h-[48px] px-5
+                     saas-button-primary rounded-xl text-sm font-semibold whitespace-nowrap"
         >
           + New task
         </Link>
@@ -369,15 +368,12 @@ export default function DashboardPage() {
                         ? setShowAllLowEnergy(true)
                         : setShowAllNormal(true)
                     }
-                    className="text-sm text-[#636E72] hover:text-[#2D3436] transition-colors
+                className="text-sm text-[#6B8F9E] hover:underline transition-colors
                                focus-visible:outline-2 focus-visible:outline-[#6B8F9E] rounded"
                   >
                     {hiddenCount === 1
-                      ? "1 more task"
-                      : `${hiddenCount} more tasks`}{" "}
-                    {energyMode === "low"
-                      ? "— here when you're ready, no rush."
-                      : "— show them all."}
+                  ? "Show 1 more →"
+                  : `Show ${hiddenCount} more →`}
                   </button>
                 )}
               </div>
@@ -391,7 +387,7 @@ export default function DashboardPage() {
                   <p className="text-xs font-medium text-[#B2BEC3] uppercase tracking-wide">
                     Taking a break
                   </p>
-                  <div className="flex-1 border-t border-[#DFE6E9]" aria-hidden="true" />
+                  <div className="flex-1 border-t border-dashed border-[#DFE6E9]" aria-hidden="true" />
                 </div>
 
                 <p className="text-xs text-[#B2BEC3] -mt-2">
@@ -429,9 +425,7 @@ export default function DashboardPage() {
       >
         <Link
           href="/task/new"
-          className="flex items-center justify-center w-full min-h-[48px]
-                     bg-[#6B8F9E] text-white rounded-xl text-base font-medium
-                     hover:bg-[#5A7D8C] transition-colors"
+          className="flex items-center justify-center w-full min-h-[48px] saas-button-primary rounded-xl text-base font-semibold"
         >
           + New task
         </Link>

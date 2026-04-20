@@ -175,11 +175,12 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
           setTitle(e.target.value)
           if (titleError) setTitleError("")
         }}
-        placeholder="e.g. Write my essay introduction"
+        placeholder="What do you need to get done?"
         maxLength={200}
         error={titleError}
         autoComplete="off"
         autoFocus
+        variant="title"
       />
 
       {/* Category */}
@@ -198,10 +199,10 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
                 type="button"
                 onClick={() => setCategory(cat.value as Category)}
                 className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium transition-colors touch-target",
+                  "px-4 py-2 rounded-full text-sm font-medium transition-all touch-target",
                   "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
                   isActive
-                    ? "text-white"
+                    ? "text-white shadow-soft"
                     : "bg-white border border-[#DFE6E9] text-[#636E72] hover:border-[#B2BEC3]"
                 )}
                 style={isActive ? { backgroundColor: cat.colour } : undefined}
@@ -225,7 +226,7 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
           aria-expanded={showDetails}
           className={cn(
             "flex items-center gap-1.5 text-sm text-[#636E72] hover:text-[#2D3436]",
-            "transition-colors focus-visible:outline-2 focus-visible:outline-[#6B8F9E] rounded"
+            "transition-colors focus-visible:outline-2 focus-visible:outline-[#6B8F9E] rounded min-h-[44px]"
           )}
         >
           <svg
@@ -297,7 +298,7 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
       {error && (
         <div
           role="alert"
-          className="px-4 py-3 rounded-xl bg-[#E07070]/10 border border-[#E07070]/20 text-sm text-[#E07070]"
+          className="px-4 py-3 rounded-xl bg-[#F0C674]/15 border border-[#F0C674]/40 text-sm text-[#2D3436] leading-relaxed"
         >
           {error}
         </div>
@@ -310,7 +311,7 @@ export function TaskInputForm({ initialValues, mode = "create" }: TaskInputFormP
         fullWidth
         className="text-base py-3"
       >
-        {mode === "edit" ? "Save and re-break down" : "Break it down for me"}
+        {mode === "edit" ? "Save and re-break down" : "Break it down for me ✨"}
       </Button>
     </form>
   )

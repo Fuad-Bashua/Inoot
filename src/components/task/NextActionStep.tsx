@@ -37,10 +37,7 @@ export function NextActionStep({ subtask, onComplete }: NextActionStepProps) {
   }
 
   return (
-    <div
-      className="rounded-xl border border-[#A8C5B8]/30 bg-[#A8C5B8]/10 p-5 space-y-3"
-      aria-label="Up next: your current step"
-    >
+    <div className="rounded-xl border border-[#6B8F9E]/25 bg-[#6B8F9E]/10 p-5 space-y-3" aria-label="Up next: your current step">
       {/* Label */}
       <p className="text-xs font-medium text-[#636E72] uppercase tracking-wide">
         Up next
@@ -75,7 +72,7 @@ export function NextActionStep({ subtask, onComplete }: NextActionStepProps) {
           disabled={isUpdating || completed}
           aria-label={`Mark "${subtask.title}" as done`}
           className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors touch-target",
+            "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors touch-target",
             "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
             completed
               ? "bg-[#81C995]/20 text-[#81C995] cursor-default"
@@ -85,7 +82,7 @@ export function NextActionStep({ subtask, onComplete }: NextActionStepProps) {
         >
           {completed ? (
             <>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 16 16" aria-hidden="true">
+              <svg className="w-4 h-4 motion-check" fill="none" viewBox="0 0 16 16" aria-hidden="true">
                 <path
                   d="M3 8l4 4 6-6"
                   stroke="currentColor"

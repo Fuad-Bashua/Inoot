@@ -33,16 +33,24 @@ export async function POST(request: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12)
 
+    // Neon HTTP mode does not support transaction-based nested writes.
+    // Create the user first, then create default preferences separately.
     const user = await prisma.user.create({
       data: {
         name,
         email,
         passwordHash,
-        preferences: {
-          create: {},  // Creates default preferences
-        },
       },
     })
+
+    try {
+      await prisma.userPreference.create({
+        data: { userId: user.id },
+      })
+    } catch (prefError) {
+      // Non-fatal: preferences are lazily recoverable via /api/preferences upsert.
+      console.error("Signup preferences creation warning:", prefError)
+    }
 
     return NextResponse.json(
       {

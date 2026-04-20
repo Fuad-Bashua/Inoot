@@ -35,6 +35,9 @@ export function TaskCard({ task }: TaskCardProps) {
   const categoryLabel = getCategoryLabel(task.category)
   const statusBadge = STATUS_BADGE[task.status]
   const isPaused = task.status === "PAUSED"
+  const nextStep = task.subtasks
+    .filter((s) => !s.completed)
+    .sort((a, b) => a.orderIndex - b.orderIndex)[0]
   // Light categories need dark text on their badge
   const badgeTextClass = LIGHT_CATEGORY_BADGE[task.category]
     ? "text-[#2D3436]"
@@ -45,10 +48,11 @@ export function TaskCard({ task }: TaskCardProps) {
       onClick={() => router.push(`/task/${task.id}`)}
       className={cn(
         "group bg-white border border-[#DFE6E9] rounded-xl p-6 cursor-pointer",
-        "shadow-sm hover:shadow-md hover:border-[#B2BEC3] transition-all",
+        "rounded-2xl shadow-sm hover:shadow-lg hover:border-[#B2BEC3] transition-all motion-card-lift",
         // Paused tasks are visually muted but still fully interactive
         isPaused && "opacity-70"
       )}
+      style={{ borderLeft: `4px solid ${categoryColour}` }}
       role="button"
       tabIndex={0}
       aria-label={`Task: ${task.title}${isPaused ? " (paused)" : ""}`}
@@ -86,9 +90,12 @@ export function TaskCard({ task }: TaskCardProps) {
       </div>
 
       {/* Task title */}
-      <h3 className="font-medium text-[#2D3436] leading-snug mb-4 group-hover:text-[#1a1f20] transition-colors">
+      <h3 className="text-[18px] font-semibold text-[#2D3436] leading-snug mb-2 group-hover:text-[#1a1f20] transition-colors">
         {task.title}
       </h3>
+      <p className="text-sm text-[#636E72] truncate mb-4">
+        Up next: {nextStep?.title ?? "No remaining subtasks"}
+      </p>
 
       {/* Progress */}
       <div className="space-y-2">

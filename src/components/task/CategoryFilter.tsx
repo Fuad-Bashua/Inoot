@@ -15,7 +15,7 @@ const CATEGORY_DEFS: CategoryDef[] = [
   { value: "ALL",      label: "All",      activeColour: "#6B8F9E" },
   { value: "ACADEMIC", label: "Academic", icon: "📚", activeColour: "#7FAACC" },
   { value: "CAREER",   label: "Career",   icon: "💼", activeColour: "#C2A0D0" },
-  { value: "PERSONAL", label: "Personal", icon: "🌱", activeColour: "#D4A843" },
+  { value: "PERSONAL", label: "Personal", icon: "🌱", activeColour: "#F0C674" },
 ]
 
 export interface CategoryCounts {
@@ -55,10 +55,10 @@ export function CategoryFilter({ selected, onChange, counts }: CategoryFilterPro
               aria-selected={isActive}
               onClick={() => onChange(cat.value)}
               className={cn(
-                "min-h-[44px] px-4 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
+                "min-h-[40px] px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap",
                 "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
                 isActive
-                  ? "text-white"
+                  ? "text-white shadow-soft"
                   : "bg-white border border-[#DFE6E9] text-[#636E72] hover:border-[#B2BEC3]"
               )}
               style={isActive ? { backgroundColor: cat.activeColour } : undefined}

@@ -28,16 +28,14 @@ export function EmptyState({ category = "ALL" }: EmptyStateProps) {
   const { heading, sub } = MESSAGES[category]
 
   return (
-    <div className="flex flex-col items-center justify-center text-center py-12 sm:py-20 px-4">
-      <span className="text-5xl mb-4" role="img" aria-label="Plant sprout">
-        🌱
-      </span>
+    <div className="flex flex-col items-center justify-center text-center py-14 sm:py-24 px-4">
+      <span className="text-6xl mb-4 text-[#6B8F9E]/70" role="img" aria-label="Plant sprout">🌱</span>
       <h2 className="text-lg font-semibold text-[#2D3436] mb-2">{heading}</h2>
       <p className="text-sm text-[#636E72] leading-relaxed mb-6 max-w-xs">{sub}</p>
       <Link
         href="/task/new"
-        className="inline-flex items-center px-5 py-2.5 bg-[#6B8F9E] text-white rounded-xl
-                   text-sm font-medium hover:bg-[#5A7D8C] transition-colors
+        className="inline-flex items-center px-5 py-2.5 saas-button-primary motion-button-scale rounded-xl
+                   text-sm font-semibold
                    min-h-[44px] focus-visible:outline-2 focus-visible:outline-[#6B8F9E]
                    focus-visible:outline-offset-2"
       >

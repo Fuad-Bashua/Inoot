@@ -2,12 +2,12 @@
 // Mirrors the real dashboard layout so there's no layout shift.
 export default function DashboardLoading() {
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
+    <div className="min-h-screen app-shell flex flex-col">
       {/* Navbar skeleton */}
       <div className="sticky top-0 z-50 bg-white border-b border-[#DFE6E9] h-14" aria-hidden="true" />
 
       {/* Page content skeleton */}
-      <div className="flex-grow max-w-[768px] mx-auto px-6 py-8 md:px-12 md:py-12 w-full">
+      <div className="flex-grow max-w-[1120px] mx-auto px-4 sm:px-6 py-8 md:py-10 w-full">
         <div className="flex flex-col gap-8 animate-pulse">
           {/* Greeting */}
           <div className="space-y-2">
@@ -48,6 +48,9 @@ export default function DashboardLoading() {
               </div>
             ))}
           </div>
+        </div>
+        <div className="pt-6 flex justify-center">
+          <div className="loader-dots" aria-hidden="true"><span /><span /><span /></div>
         </div>
       </div>
     </div>

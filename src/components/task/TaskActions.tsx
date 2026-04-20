@@ -82,7 +82,7 @@ export function TaskActions({ task, onStatusChange }: TaskActionsProps) {
         <p
           role="status"
           aria-live="polite"
-          className="text-sm text-[#636E72] text-center py-2"
+          className="text-sm text-[#636E72] text-center py-2 motion-toast"
         >
           {pauseMessage}
         </p>
@@ -150,7 +150,7 @@ export function TaskActions({ task, onStatusChange }: TaskActionsProps) {
               aria-label="More task options"
               className={cn(
                 "absolute bottom-full left-0 mb-2 z-50",
-                "min-w-[160px] bg-white rounded-xl",
+                "min-w-[180px] bg-white rounded-xl",
                 "border border-[#DFE6E9] shadow-lg py-1",
                 "animate-[fadeIn_0.12s_ease-out]"
               )}
@@ -160,12 +160,36 @@ export function TaskActions({ task, onStatusChange }: TaskActionsProps) {
                 role="menuitem"
                 onClick={() => {
                   setShowMore(false)
+                  router.push(`/task/${task.id}/edit`)
+                }}
+                className="w-full text-left px-4 py-2.5 text-sm text-[#636E72] hover:bg-gray-50 transition-colors"
+              >
+                Edit task
+              </button>
+              {task.status !== "COMPLETED" && (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setShowMore(false)
+                    handleTogglePause()
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-[#636E72] hover:bg-gray-50 transition-colors"
+                >
+                  {task.status === "PAUSED" ? "Resume task" : "Pause task"}
+                </button>
+              )}
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setShowMore(false)
                   setShowDeleteConfirm(true)
                 }}
                 className={cn(
                   "w-full text-left px-4 py-2.5 text-sm",
-                  "text-[#E07070]/80 hover:bg-[#E07070]/5 hover:text-[#E07070]",
-                  "transition-colors focus-visible:outline-none focus-visible:bg-[#E07070]/5"
+                  "text-[#636E72] hover:bg-[#F8F9FA] hover:text-[#2D3436]",
+                  "transition-colors focus-visible:outline-none focus-visible:bg-[#F8F9FA]"
                 )}
               >
                 Delete task…
@@ -177,7 +201,7 @@ export function TaskActions({ task, onStatusChange }: TaskActionsProps) {
 
       {/* Delete confirmation — expands inline below the action row */}
       {showDeleteConfirm && (
-        <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#E07070]/5 border border-[#E07070]/20">
+        <div className="flex flex-col gap-3 p-4 rounded-xl bg-[#F0C674]/12 border border-[#F0C674]/35">
           <p className="text-sm text-[#636E72]">
             Are you sure? This can&apos;t be undone.
           </p>
@@ -187,9 +211,9 @@ export function TaskActions({ task, onStatusChange }: TaskActionsProps) {
               onClick={handleDelete}
               disabled={isUpdating}
               className={cn(
-                "px-4 py-2 text-sm rounded-xl bg-[#E07070] text-white",
-                "hover:bg-[#cf5f5f] transition-colors min-h-[44px]",
-                "focus-visible:outline-2 focus-visible:outline-[#E07070] focus-visible:outline-offset-2",
+                "px-4 py-2 text-sm rounded-xl bg-[#2D3436] text-white",
+                "hover:opacity-90 transition-colors min-h-[44px]",
+                "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
                 isUpdating && "opacity-50 cursor-not-allowed"
               )}
             >

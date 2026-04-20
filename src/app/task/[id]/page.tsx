@@ -238,17 +238,12 @@ function TaskPageContent({ taskId }: { taskId: string }) {
   const isPersonal = task.category === "PERSONAL"
 
   return (
-    <div className="space-y-8">
-      {/* Back link */}
-      <Link
-        href="/dashboard"
-        className="text-sm text-[#636E72] hover:text-[#2D3436] transition-colors
-                   inline-flex items-center gap-1.5
-                   focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2 rounded"
-        aria-label="Back to dashboard"
-      >
-        ← Back
-      </Link>
+    <div className="space-y-8 motion-page-enter">
+      <div className="text-sm text-[#636E72]">
+        <Link href="/dashboard" className="text-[#6B8F9E] hover:underline">Dashboard</Link>
+        <span className="mx-2">/</span>
+        <span className="text-[#636E72]">{task.title}</span>
+      </div>
 
       {/* T18 — Welcome back card (only when returning after 24+ hours) */}
       {showWelcomeBack && lastInteractedAt && (
@@ -311,11 +306,12 @@ function TaskPageContent({ taskId }: { taskId: string }) {
 
       {/* Progress bar + milestone message (T19) */}
       <div className="space-y-2" aria-label={`Task progress: ${progress}% complete`}>
-        <ProgressBar progress={progress} />
+        <ProgressBar progress={progress} className="h-2.5" />
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm text-[#636E72]">
             {completedSubtasks.length} of {subtasks.length} steps done
           </p>
+          <p className="text-sm text-[#636E72] font-medium">{progress}%</p>
         </div>
 
         {/* T19 — milestone / transition message */}
@@ -323,8 +319,7 @@ function TaskPageContent({ taskId }: { taskId: string }) {
           <p
             role="status"
             aria-live="polite"
-            className="text-sm text-[#636E72] leading-relaxed
-                       animate-[fadeIn_0.4s_ease-in-out]"
+            className="text-sm text-[#636E72] leading-relaxed motion-toast"
           >
             {milestoneMessage}
           </p>
@@ -334,11 +329,11 @@ function TaskPageContent({ taskId }: { taskId: string }) {
       {/* AI Guidance callout */}
       {task.aiGuidance && (
         <div
-          className="px-5 py-4 rounded-xl bg-[#A8C5B8]/10 border border-[#A8C5B8]/20"
+          className="soft-glass-card px-5 py-4 rounded-2xl border-l-4 border-l-[#6B8F9E]"
           role="note"
           aria-label="Guidance for this task"
         >
-          <p className="text-sm text-[#636E72] leading-relaxed">{task.aiGuidance}</p>
+          <p className="text-sm text-[#636E72] leading-relaxed italic">{task.aiGuidance}</p>
         </div>
       )}
 
@@ -360,7 +355,7 @@ function TaskPageContent({ taskId }: { taskId: string }) {
             <p className="text-xs font-medium text-[#B2BEC3] uppercase tracking-wide mt-8 mb-1">
               Coming up
             </p>
-            <ul className="divide-y divide-[#DFE6E9] opacity-50">
+            <ul className="divide-y divide-[#DFE6E9]">
               {remainingSubtasks.map((s) => (
                 <SubtaskItem
                   key={s.id}
@@ -401,7 +396,7 @@ function TaskPageContent({ taskId }: { taskId: string }) {
       </div>
 
       {/* Task actions */}
-      <div className="pt-4 border-t border-[#DFE6E9]">
+      <div className="pt-4 border-t border-dashed border-[#DFE6E9]">
         <TaskActions
           task={{ ...task, subtasks }}
           onStatusChange={handleStatusChange}
@@ -417,9 +412,9 @@ export default function TaskPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#F8F9FA] flex flex-col">
+      <div className="min-h-screen app-shell flex flex-col">
         <Navbar />
-        <main className="flex-grow max-w-[768px] mx-auto px-6 py-8 md:px-12 md:py-12 w-full">
+        <main className="flex-grow max-w-[1120px] mx-auto px-4 sm:px-6 py-8 md:py-10 w-full">
           <TaskPageContent taskId={taskId} />
         </main>
       </div>

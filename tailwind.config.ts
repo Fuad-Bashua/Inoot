@@ -22,16 +22,21 @@ const config: Config = {
         border: "#DFE6E9",
         success: "#81C995",
         warning: "#F0C674",
-        error: "#E07070",
+        error: "#F0C674",
         academic: "#7FAACC",
         career: "#C2A0D0",
         personal: "#F0C674",
       },
       borderRadius: {
         xl: "12px",
+        "2xl": "20px",
       },
       maxWidth: {
         content: "768px",
+      },
+      boxShadow: {
+        soft: "0 10px 24px rgba(45, 52, 54, 0.08)",
+        glass: "0 12px 30px rgba(17, 24, 26, 0.2)",
       },
     },
   },

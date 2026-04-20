@@ -60,32 +60,33 @@ export function EnergySelector({ value, onChange }: EnergySelectorProps) {
     <div
       role="group"
       aria-label="How are you feeling today?"
-      className="flex gap-2 flex-wrap"
+      className="overflow-x-auto scrollbar-hide -mx-4 sm:mx-0 px-4 sm:px-0"
     >
-      {MODES.map((mode) => {
-        const isActive = value === mode.value
-        return (
-          <button
-            key={mode.value}
-            type="button"
-            onClick={() => onChange(mode.value)}
-            aria-pressed={isActive}
-            className={cn(
-              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm border transition-all",
-              "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
-              "min-h-[44px]",
-              isActive
-                ? "border-[#6B8F9E] bg-[#6B8F9E]/8 text-[#2D3436] font-medium shadow-sm"
-                : "border-[#DFE6E9] text-[#636E72] hover:border-[#B2BEC3] bg-white"
-            )}
-          >
-            <span aria-hidden="true" className="text-base leading-none">
-              {mode.emoji}
-            </span>
-            <span className="leading-none">{mode.label}</span>
-          </button>
-        )
-      })}
+      <div className="inline-flex min-w-max items-center rounded-full border border-[#DFE6E9] bg-white p-1 relative">
+        {MODES.map((mode) => {
+          const isActive = value === mode.value
+          return (
+            <button
+              key={mode.value}
+              type="button"
+              onClick={() => onChange(mode.value)}
+              aria-pressed={isActive}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all min-h-[44px] relative z-10",
+                "focus-visible:outline-2 focus-visible:outline-[#6B8F9E] focus-visible:outline-offset-2",
+                isActive
+                  ? "bg-[#6B8F9E] text-white font-semibold shadow-soft"
+                  : "text-[#636E72] hover:text-[#2D3436]"
+              )}
+            >
+              <span aria-hidden="true" className="text-base leading-none">
+                {mode.emoji}
+              </span>
+              <span className="leading-none whitespace-nowrap">{mode.label}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

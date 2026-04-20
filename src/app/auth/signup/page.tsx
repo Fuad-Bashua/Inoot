@@ -113,8 +113,8 @@ export default function SignUpPage() {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[#2D3436]">Create your account</h1>
-        <p className="text-[#636E72] mt-1 text-sm leading-relaxed">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Create your account</h1>
+        <p className="text-[#9CA3AF] mt-2 text-base leading-relaxed">
           Take things one step at a time — starting here.
         </p>
       </div>
@@ -130,6 +130,7 @@ export default function SignUpPage() {
           error={errors.name}
           autoComplete="name"
           autoFocus
+          variant="glass"
         />
 
         <Input
@@ -141,6 +142,7 @@ export default function SignUpPage() {
           onChange={handleChange}
           error={errors.email}
           autoComplete="email"
+          variant="glass"
         />
 
         <Input
@@ -152,6 +154,7 @@ export default function SignUpPage() {
           onChange={handleChange}
           error={errors.password}
           autoComplete="new-password"
+          variant="glass"
         />
 
         <Input
@@ -163,11 +166,12 @@ export default function SignUpPage() {
           onChange={handleChange}
           error={errors.confirmPassword}
           autoComplete="new-password"
+          variant="glass"
         />
 
         {errors.form && (
           <div
-            className="px-4 py-3 rounded-xl bg-[#FDF2F2] border border-[#E07070] text-[#E07070] text-sm leading-relaxed"
+            className="px-4 py-3 rounded-xl bg-[rgba(107,143,158,0.1)] border-l-4 border-[#6B8F9E] text-[#cfe2ea] text-sm leading-relaxed"
             role="alert"
           >
             {errors.form}
@@ -186,11 +190,11 @@ export default function SignUpPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-[#636E72] mt-6">
+      <p className="text-center text-sm text-[#9CA3AF] mt-6">
         Already have an account?{" "}
         <Link
           href="/auth/login"
-          className="text-[#6B8F9E] font-medium hover:text-[#5A7D8C] transition-colors"
+          className="text-[#9ec0ce] font-medium hover:text-white transition-colors"
         >
           Log in
         </Link>

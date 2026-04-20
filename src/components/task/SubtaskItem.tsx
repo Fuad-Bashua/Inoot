@@ -49,7 +49,7 @@ export function SubtaskItem({ subtask, isPreview = false, onToggle }: SubtaskIte
   return (
     <li
       className={cn(
-        "flex gap-3 py-4 border-b border-[#DFE6E9] last:border-b-0 transition-opacity duration-200",
+        "flex gap-3 py-4 border-b border-[#DFE6E9] last:border-b-0 transition-all duration-200 hover:bg-gray-50/70",
         // Completed items in any context get opacity-50
         completed && !isPreview && "opacity-50",
       )}
@@ -70,7 +70,7 @@ export function SubtaskItem({ subtask, isPreview = false, onToggle }: SubtaskIte
         >
           <span
             className={cn(
-              "w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 flex-none",
+              "w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-colors duration-200 flex-none",
               completed
                 ? "bg-[#6B8F9E] border-[#6B8F9E]"
                 : "bg-white border-[#B2BEC3] hover:border-[#6B8F9E]"
@@ -78,7 +78,7 @@ export function SubtaskItem({ subtask, isPreview = false, onToggle }: SubtaskIte
           >
             {completed && (
               <svg
-                className="w-3 h-3 text-white"
+                className="w-3 h-3 text-white motion-check"
                 fill="none"
                 viewBox="0 0 12 12"
                 aria-hidden="true"

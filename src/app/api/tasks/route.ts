@@ -65,7 +65,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const task = await prisma.task.create({
+    // Neon HTTP mode does not support Prisma's transaction paths that can be
+    // triggered by create+include. Create first, then read with include.
+    const createdTask = await prisma.task.create({
       data: {
         title: title.trim(),
         description: description?.trim() || null,
@@ -74,9 +76,11 @@ export async function POST(request: NextRequest) {
         reminderAt: reminderAt ? new Date(reminderAt) : null,
         userId,
       },
-      include: {
-        subtasks: true,
-      },
+    })
+
+    const task = await prisma.task.findUnique({
+      where: { id: createdTask.id },
+      include: { subtasks: true },
     })
 
     return NextResponse.json({ success: true, data: task }, { status: 201 })
